@@ -1,0 +1,19 @@
+import express from "express";
+import cors from "cors";
+import cookiesParse from "cookie-parser";
+import testRoute from "./routes/testRoute.js";
+
+const configuration = {
+  origin: ["http://localhost:3000"],
+  methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
+  credentials: true,
+  optionsSuccessStatus: 200,
+};
+const app = express();
+app.use(cors(configuration));
+app.use(cookiesParse());
+app.use(express.json());
+
+app.use("/api", testRoute);
+
+export default app;
