@@ -15,22 +15,56 @@ export const firstFunc = async (req, res) => {
         theme: "dark",
         mood: "modern",
         target: ["business", "travel"],
-        style: "minimal",
+        style: "minimal"
       },
       previewUrl: "https://cdn.nextcraft.io/previews/footer-dark.png",
       author: {
         id: "user123",
-        name: "Tamuri Tskhvediani",
+        name: "Tamuri Tskhvediani"
       },
       isApproved: true,
-      embedding: [0.123, -0.45, 0.33],
+      embedding: [0.123, -0.45, 0.33]
     };
 
-    const newData = new componentsModel(data);
+    await componentsModel.create(data);
 
-    await newData.save();
+    // await newData.save();
 
     res.json("new server is started ");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const aiFunc = async (request, res) => {
+  try {
+    const req = request.body.data;
+    console.log(req);
+
+    const data = {
+      name: req.name,
+      category: req.category,
+      description: req.description,
+      tags: req.tags.split(","),
+      code: req.code,
+      aiMeta: {
+        theme: req.theme,
+        mood: req.mood,
+        target: req.target.split(","),
+        style: req.style
+      },
+      previewUrl: req.previewUrl,
+      author: {
+        id: req.authorId,
+        name: req.authorName
+      },
+      isApproved: req.isApproved === "on" ? true : false,
+      embedding: [0.123, -0.45, 0.33]
+    };
+
+    await componentsModel.create(data);
+
+    res.status(200).json("Component created successfully");
   } catch (error) {
     console.log(error);
   }
