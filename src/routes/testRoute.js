@@ -1,5 +1,9 @@
 import express from "express";
-import { firstFunc, aiFunc } from "../controllers/testController.js";
+import {
+  firstFunc,
+  aiFunc,
+  componentsListFunc
+} from "../controllers/testController.js";
 
 const testRoute = express.Router();
 
@@ -7,5 +11,6 @@ const testRoute = express.Router();
 //description: testFunc
 testRoute.get("/", firstFunc);
 testRoute.post("/ai", aiFunc);
+testRoute.get("/components-list", componentsListFunc);
 
 export default testRoute;

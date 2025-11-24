@@ -3,6 +3,15 @@
 
 import { componentsModel } from "../models/mainComponentsModels.js";
 
+export const componentsListFunc = async (req, res) => {
+  try {
+    const components = await componentsModel.find({});
+    res.json(components);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json("Server Error");
+  }
+};
 export const firstFunc = async (req, res) => {
   try {
     const data = {
