@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookiesParse from "cookie-parser";
-import testRoute from "./routes/testRoute.js";
+import componentsRoutes from "./components/componentsRoutes.js";
 
 const configuration = {
   origin: ["http://localhost:3000"],
@@ -14,6 +14,6 @@ app.use(cors(configuration));
 app.use(cookiesParse());
 app.use(express.json());
 
-app.use("/api", testRoute);
+app.use("/api", componentsRoutes);
 
 export default app;
