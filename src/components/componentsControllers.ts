@@ -31,15 +31,15 @@ export const firstFunc = async (req: Request, res: Response) => {
         theme: "dark",
         mood: "modern",
         target: ["business", "travel"],
-        style: "minimal",
+        style: "minimal"
       },
       previewUrl: "https://cdn.nextcraft.io/previews/footer-dark.png",
       author: {
         id: "user123",
-        name: "Tamuri Tskhvediani",
+        name: "Tamuri Tskhvediani"
       },
       isApproved: true,
-      embedding: [0.123, -0.45, 0.33],
+      embedding: [0.123, -0.45, 0.33]
     };
 
     // The data object already conforms to the Mongoose schema
@@ -55,45 +55,31 @@ export const firstFunc = async (req: Request, res: Response) => {
 export const aiFunc = async (req: Request, res: Response) => {
   try {
     // Explicitly define req.body type for safety
-    const reqData = req.body as {
-      name: string;
-      category: string;
-      description: string;
-      tags: string; // Comma-separated string
-      code: string;
-      theme: string;
-      mood: string;
-      target: string; // Comma-separated string
-      style: string;
-      previewUrl: string;
-      authorId: string;
-      authorName: string;
-      isApproved: string; // "on" or other value
-    };
+    const reqData = req.body.data;
 
-    console.log(reqData);
+    // console.log("0000000", reqData.data);
 
     const data: ComponentData = {
       // Ensure the final structure matches ComponentData
       name: reqData.name,
       category: reqData.category,
       description: reqData.description,
-      tags: reqData.tags.split(",").map((t) => t.trim()), // Trim tags for clean data
+      tags: reqData.tags.split(",").map((t: string) => t.trim()), // Trim tags for clean data
       code: reqData.code,
       aiMeta: {
         theme: reqData.theme,
         mood: reqData.mood,
-        target: reqData.target.split(",").map((t) => t.trim()), // Trim target for clean data
-        style: reqData.style,
+        target: reqData.target.split(",").map((t: string) => t.trim()), // Trim target for clean data
+        style: reqData.style
       },
       previewUrl: reqData.previewUrl,
       author: {
         id: reqData.authorId,
-        name: reqData.authorName,
+        name: reqData.authorName
       },
       // Safely convert "on"/"off" or other values to boolean
       isApproved: reqData.isApproved === "on" || reqData.isApproved === "true",
-      embedding: [0.123, -0.45, 0.33], // Hardcoded, but should ideally come from the request
+      embedding: [0.123, -0.45, 0.33] // Hardcoded, but should ideally come from the request
     };
 
     await componentsModel.create(data);

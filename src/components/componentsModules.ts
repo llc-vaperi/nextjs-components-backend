@@ -50,17 +50,17 @@ const componentsSchema = new Schema<ComponentData>(
       theme: String,
       mood: String,
       target: [String],
-      style: String,
+      style: String
     },
     previewUrl: String,
     author: {
       id: String,
-      name: String,
+      name: String
     },
     isApproved: Boolean,
     embedding: [Number],
     createdAt: { type: Date, default: () => new Date() },
-    updatedAt: { type: Date, default: () => new Date() },
+    updatedAt: { type: Date, default: () => new Date() }
   },
   { timestamps: true }
 ); // Mongoose can handle createdAt/updatedAt automatically
