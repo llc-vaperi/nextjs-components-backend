@@ -5,6 +5,7 @@ import {
   firstFunc,
   aiFunc,
   componentsListFunc,
+  objSaveFunc,
 } from "./componentsControllers.js"; // Note the .js extension
 
 const componentsRoutes = express.Router();
@@ -13,6 +14,7 @@ const componentsRoutes = express.Router();
 // description: testFunc
 componentsRoutes.get("/", firstFunc);
 componentsRoutes.post("/ai", aiFunc);
+componentsRoutes.post("/obj-input", objSaveFunc);
 componentsRoutes.get("/components-list", componentsListFunc);
 
 export default componentsRoutes;

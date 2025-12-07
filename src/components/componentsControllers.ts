@@ -1,12 +1,6 @@
-// path: /api/componentsControllers.ts
-
 import { Request, Response } from "express";
-// Import the model and the ComponentData type from the new module file
 import { componentsModel, ComponentData } from "./componentsModules.js";
-// Note: You must keep the .js extension in imports for Node ESM modules
-
-// Removed the ComponentData, AiMeta, and Author interfaces here
-// since they are now exported from componentsModules.ts
+import JSON5 from "json5";
 
 export const componentsListFunc = async (req: Request, res: Response) => {
   try {
@@ -31,15 +25,15 @@ export const firstFunc = async (req: Request, res: Response) => {
         theme: "dark",
         mood: "modern",
         target: ["business", "travel"],
-        style: "minimal"
+        style: "minimal",
       },
       previewUrl: "https://cdn.nextcraft.io/previews/footer-dark.png",
       author: {
         id: "user123",
-        name: "Tamuri Tskhvediani"
+        name: "Tamuri Tskhvediani",
       },
       isApproved: true,
-      embedding: [0.123, -0.45, 0.33]
+      embedding: [0.123, -0.45, 0.33],
     };
 
     // The data object already conforms to the Mongoose schema
@@ -70,16 +64,16 @@ export const aiFunc = async (req: Request, res: Response) => {
         theme: reqData.theme,
         mood: reqData.mood,
         target: reqData.target.split(",").map((t: string) => t.trim()), // Trim target for clean data
-        style: reqData.style
+        style: reqData.style,
       },
       previewUrl: reqData.previewUrl,
       author: {
         id: reqData.authorId,
-        name: reqData.authorName
+        name: reqData.authorName,
       },
       // Safely convert "on"/"off" or other values to boolean
       isApproved: reqData.isApproved === "on" || reqData.isApproved === "true",
-      embedding: [0.123, -0.45, 0.33] // Hardcoded, but should ideally come from the request
+      embedding: [0.123, -0.45, 0.33], // Hardcoded, but should ideally come from the request
     };
 
     await componentsModel.create(data);
@@ -88,5 +82,42 @@ export const aiFunc = async (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to create component" }); // Added error response
+  }
+};
+
+export const objSaveFunc = async (req: Request, res: Response) => {
+  try {
+    const data = req.body;
+    const rawString = data.data.obj;
+
+    console.log("Parsing raw string...");
+
+    // ⚠️ მაგია აქ ხდება:
+    // ჩვენ ვქმნით ფუნქციას, რომლის ტანი არის "return { ...შენი_ობიექტი... }"
+    // და მერე ეგრევე ვიძახებთ ამ ფუნქციას ().
+    const parseJsValue = new Function("return " + rawString);
+
+    const objParsed = parseJsValue();
+
+    // აქ შეგიძლია ბაზაში შენახვა
+    // await Component.create(objParsed);
+
+    await componentsModel.create(objParsed);
+
+    res.status(200).json({
+      message: "Component parsed and saved successfully",
+      parsedData: {
+        name: objParsed.name,
+        category: objParsed.category,
+        // კოდს უკან ნუ გაატან რესპონსში თუ ძალიან დიდი ტექსტია,
+        // ან გაატანე თუ გჭირდება.
+      },
+    });
+  } catch (error) {
+    console.error("PARSING ERROR:", error);
+    res.status(500).json({
+      message: "Failed to process component code",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 };
