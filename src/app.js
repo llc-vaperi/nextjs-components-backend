@@ -4,7 +4,7 @@ import cookiesParse from "cookie-parser";
 import componentsRoutes from "./components/componentsRoutes.js";
 
 const configuration = {
-  origin: ["http://localhost:3000", "https://next-componets-new.pages.dev"],
+  origin: ["https://next-componets-new.pages.dev"],
   methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
   credentials: true,
   optionsSuccessStatus: 200,
