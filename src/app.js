@@ -14,6 +14,10 @@ app.use(cors(configuration));
 app.use(cookiesParse());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
 app.use("/api", componentsRoutes);
 
 export default app;
