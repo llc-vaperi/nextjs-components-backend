@@ -5,53 +5,60 @@ import { BlogModel } from "./blog.model.js";
 // Docs say it looks for GEMINI_API_KEY, but we have GOOGLE_API_KEY, so we pass it explicitly.
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 
-// Vertex AI client for Imagen (separate from Gemini text generation)
-const vertexAI = new GoogleGenAI({
-  vertexai: true,
-  project: process.env.GOOGLE_CLOUD_PROJECT || "goniflow-blog",
-  location: process.env.GOOGLE_CLOUD_LOCATION || "us-central1",
-});
-
-// Image Generation Function using Google Imagen 3
+// Image Generation Function using Grok (xAI)
 const generateImage = async (prompt: string): Promise<string> => {
-  console.log("🎨 Generating Image with Google Imagen 3 for:", prompt);
+  console.log("🎨 Generating Image with Grok (xAI) for:", prompt);
+
+  const apiKey = process.env.XAI_API_KEY;
+  if (!apiKey) {
+    console.warn("⚠️ XAI_API_KEY is missing. Using Fallback.");
+    return generateFallbackImage(prompt);
+  }
 
   try {
-    const response = await vertexAI.models.generateImages({
-      model: "imagen-3.0-generate-001",
-      prompt: prompt + ", realistic, 8k, high quality, futuristic tech style",
-      config: {
-        numberOfImages: 1,
-        aspectRatio: "16:9",
+    // Attempting to use OpenAI-compatible images endpoint
+    const response = await fetch("https://api.x.ai/v1/images/generations", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
       },
+      body: JSON.stringify({
+        model: "grok-2-image-1212",
+        prompt: prompt + ", realistic, 8k, high quality, futuristic tech style",
+        n: 1,
+        response_format: "url",
+      }),
     });
 
-    console.log("ImageData:", response);
-
-    // Extract the generated image
-    if (
-      response &&
-      response.generatedImages &&
-      response.generatedImages.length > 0
-    ) {
-      const imageData = response.generatedImages[0];
-
-      // TODO: Upload base64 image to cloud storage (AWS S3, Google Cloud Storage, etc.)
-      // For now, return a placeholder until storage is configured
-      console.log("✅ Imagen generated successfully");
-      console.log("⚠️ Image storage not yet configured, using placeholder");
-
-      return `https://placehold.co/800x450/4F46E5/FFFFFF?text=Imagen+Generated`;
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(
+        `xAI API Error: ${response.status} ${response.statusText} - ${errText}`
+      );
     }
 
-    throw new Error("No image data returned from Imagen");
+    const data: any = await response.json();
+
+    // Check OpenAI-style response format
+    if (data.data && data.data.length > 0 && data.data[0].url) {
+      console.log("✅ Grok Image generated successfully");
+      return data.data[0].url;
+    }
+
+    throw new Error("Invalid response format from xAI");
   } catch (error: any) {
-    console.error("❌ Imagen generation failed:", error.message);
-    console.log(
-      "💡 Run 'gcloud auth application-default login' to enable Imagen"
-    );
-    return `https://placehold.co/800x450/DC2626/FFFFFF?text=Auth+Required`;
+    console.error("❌ Grok generation failed, using Fallback:", error.message);
+    return generateFallbackImage(prompt);
   }
+};
+
+const generateFallbackImage = (prompt: string): string => {
+  // Extract simple keywords for text display
+  const keywords = prompt.split(" ").slice(0, 3).join(" ");
+
+  // Using Placehold.co for reliable placeholders
+  return `https://placehold.co/800x400?text=${encodeURIComponent(keywords)}`;
 };
 
 const generateSlug = (title: string): string => {

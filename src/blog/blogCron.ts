@@ -5,7 +5,7 @@ export const startBlogCron = () => {
   // Schedule: Every Tuesday at 10:00 AM
   // Cron format: Minute Hour DayOfMonth Month DayOfWeek
   // cron.schedule("0 10 * * 2", async () => {
-  cron.schedule("* * * * 5", async () => {
+  cron.schedule("0 10 * * 2", async () => {
     console.log("⏰ Cron job triggered: Generating blog post...");
     try {
       // Topics pool (can be moved to DB later)
