@@ -11,3 +11,13 @@ export const mainComponentConnection = createConnection(
     console.log("❌ DB error main components");
     process.exit(1);
   });
+
+export const blogConnection = createConnection(process.env.MONGO_URI_BLOG)
+  .on("connected", () => console.log("✅ DB connect blog"))
+  .on("disconnected", () => console.log("❌ DB disconnected blog"))
+  .on("error", () => {
+    console.log("❌ DB error blog");
+    // Don't exit process if blog DB fails
+  });
+
+// fixed duplicate
