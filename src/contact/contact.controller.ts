@@ -2,8 +2,17 @@ import { Request, Response } from "express";
 import { ContactModel } from "./contact.model.js";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
+import { v2 as cloudinary } from "cloudinary";
+import fs from "fs";
 
 dotenv.config();
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // Transporter configuration
 const transporterConfig: any = {
@@ -43,8 +52,26 @@ export const submitContact = async (req: Request, res: Response) => {
       ticketId = `TKT-${Math.floor(100000 + Math.random() * 900000)}`;
     }
 
-    // Handle file attachment name if provided by multer
-    const attachmentName = req.file ? req.file.filename : undefined;
+    // --- Cloudinary Upload Logic ---
+    let attachmentName = "";
+    let attachmentUrl = "";
+
+    if (req.file) {
+      try {
+        const uploadResult = await cloudinary.uploader.upload(req.file.path, {
+          folder: "contact_attachments",
+          resource_type: "auto",
+        });
+        attachmentUrl = uploadResult.secure_url;
+        attachmentName = req.file.originalname;
+
+        // Delete local temporary file
+        fs.unlinkSync(req.file.path);
+      } catch (uploadError) {
+        console.error("Cloudinary upload failed:", uploadError);
+        // Fallback or handle error (continue without attachment for now)
+      }
+    }
 
     // 1. Save to MongoDB
     const newContact = await ContactModel.create({
@@ -56,6 +83,7 @@ export const submitContact = async (req: Request, res: Response) => {
       priority,
       message,
       attachmentName,
+      attachmentUrl,
       ticketId,
     });
 
@@ -121,7 +149,7 @@ export const submitContact = async (req: Request, res: Response) => {
         from: process.env.MAIL_FROM || `"Support" <${process.env.SMTP_USER}>`,
         to: email,
         subject: subject,
-        text: plainText, // Adding text version significantly improves spam score
+        text: plainText,
         html: htmlContent,
       });
       console.log(`Email sent successfully to ${email}`);
@@ -145,8 +173,8 @@ export const submitContact = async (req: Request, res: Response) => {
           ${message.replace(/\n/g, "<br>")}
         </div>
         ${
-          attachmentName
-            ? `<p><strong>Attachment:</strong> <a href="http://127.0.0.1:4000/uploads/${attachmentName}" target="_blank">View Attached File</a></p>`
+          attachmentUrl
+            ? `<p><strong>Attachment:</strong> <a href="${attachmentUrl}" target="_blank">View File (${attachmentName})</a></p>`
             : ""
         }
       </div>
@@ -156,7 +184,7 @@ export const submitContact = async (req: Request, res: Response) => {
       await transporter.sendMail({
         from:
           process.env.MAIL_FROM || `"System Alert" <${process.env.SMTP_USER}>`,
-        to: process.env.SMTP_USER, // Send to your own Gmail
+        to: process.env.SMTP_USER,
         subject: `New ${type.toUpperCase()}: ${fullName}`,
         html: adminHtmlContent,
       });

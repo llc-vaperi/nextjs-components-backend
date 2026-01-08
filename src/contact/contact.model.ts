@@ -10,6 +10,7 @@ export interface IContact extends Document {
   priority?: string; // For Support
   message: string;
   attachmentName?: string;
+  attachmentUrl?: string;
   ticketId?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -25,6 +26,7 @@ const contactSchema = new Schema<IContact>(
     priority: { type: String },
     message: { type: String, required: true },
     attachmentName: { type: String },
+    attachmentUrl: { type: String },
     ticketId: { type: String },
   },
   { timestamps: true }
