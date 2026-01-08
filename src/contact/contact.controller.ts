@@ -146,7 +146,7 @@ export const submitContact = async (req: Request, res: Response) => {
         </div>
         ${
           attachmentName
-            ? `<p><strong>Attachment:</strong> Saved as ${attachmentName}</p>`
+            ? `<p><strong>Attachment:</strong> <a href="http://127.0.0.1:4000/uploads/${attachmentName}" target="_blank">View Attached File</a></p>`
             : ""
         }
       </div>
