@@ -2,17 +2,10 @@ import { Request, Response } from "express";
 import { ContactModel } from "./contact.model.js";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import { v2 as cloudinary } from "cloudinary";
+import { uploadToR2 } from "../services/r2.service.js";
 import fs from "fs";
 
 dotenv.config();
-
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
 
 // Transporter configuration
 const transporterConfig: any = {
@@ -52,23 +45,25 @@ export const submitContact = async (req: Request, res: Response) => {
       ticketId = `TKT-${Math.floor(100000 + Math.random() * 900000)}`;
     }
 
-    // --- Cloudinary Upload Logic ---
+    // --- R2 Upload Logic ---
     let attachmentName = "";
     let attachmentUrl = "";
+    let attachmentKey = "";
 
     if (req.file) {
       try {
-        const uploadResult = await cloudinary.uploader.upload(req.file.path, {
-          folder: "contact_attachments",
-          resource_type: "auto",
-        });
-        attachmentUrl = uploadResult.secure_url;
-        attachmentName = req.file.originalname;
+        const uploadResult = await uploadToR2(
+          req.file.path,
+          req.file.originalname
+        );
+        attachmentUrl = uploadResult.fileUrl;
+        attachmentName = uploadResult.fileName;
+        attachmentKey = uploadResult.fileKey;
 
         // Delete local temporary file
         fs.unlinkSync(req.file.path);
       } catch (uploadError) {
-        console.error("Cloudinary upload failed:", uploadError);
+        console.error("R2 upload failed:", uploadError);
         // Fallback or handle error (continue without attachment for now)
       }
     }
@@ -84,6 +79,7 @@ export const submitContact = async (req: Request, res: Response) => {
       message,
       attachmentName,
       attachmentUrl,
+      attachmentKey,
       ticketId,
     });
 

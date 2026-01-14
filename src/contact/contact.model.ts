@@ -11,6 +11,7 @@ export interface IContact extends Document {
   message: string;
   attachmentName?: string;
   attachmentUrl?: string;
+  attachmentKey?: string; // R2 file key for deletion
   ticketId?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -27,6 +28,7 @@ const contactSchema = new Schema<IContact>(
     message: { type: String, required: true },
     attachmentName: { type: String },
     attachmentUrl: { type: String },
+    attachmentKey: { type: String },
     ticketId: { type: String },
   },
   { timestamps: true }
