@@ -5,7 +5,11 @@ import componentsRoutes from "./components/componentsRoutes.js";
 import { startBlogCron } from "./blog/blogCron.js";
 
 const configuration = {
-  origin: ["http://localhost:3000", "https://next-componets-new.pages.dev"],
+  origin: [
+    "http://localhost:3000",
+    "https://next-componets-new.pages.dev",
+    process.env.CORS_URL,
+  ],
   methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
   credentials: true,
   optionsSuccessStatus: 200,
