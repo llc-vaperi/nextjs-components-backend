@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import cookiesParse from "cookie-parser";
+import compression from "compression"; // Gzip compression
+import helmet from "helmet"; // Security headers
 import componentsRoutes from "./components/componentsRoutes.js";
 import { startBlogCron } from "./blog/blogCron.js";
 
@@ -26,6 +28,8 @@ const app = express();
 // Start Background Services
 startBlogCron();
 
+app.use(helmet()); // Security Headers
+app.use(compression()); // Gzip Compression
 app.use(cors(configuration));
 app.use(cookiesParse());
 app.use(express.json());
