@@ -30,7 +30,7 @@ const transporter = nodemailer.createTransport(transporterConfig);
 
 // Diagnostic log (Masked)
 console.log("SMTP Config initialized for:", process.env.SMTP_USER);
-if (!process.env.SMTP_PASS) {
+if (!process.env.SMTP_PASSWORD) {
   console.error("❌ WARNING: SMTP_PASS is missing in .env!");
 }
 
@@ -54,7 +54,7 @@ export const submitContact = async (req: Request, res: Response) => {
       try {
         const uploadResult = await uploadToR2(
           req.file.path,
-          req.file.originalname
+          req.file.originalname,
         );
         attachmentUrl = uploadResult.fileUrl;
         attachmentName = uploadResult.fileName;
