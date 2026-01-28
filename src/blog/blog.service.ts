@@ -1,11 +1,13 @@
 import { GoogleGenAI } from "@google/genai";
 import { BlogModel } from "./blog.model.js";
 
+import OpenAI from "openai";
+
 // Initialize Gemini (New SDK)
 // Docs say it looks for GEMINI_API_KEY, but we have GOOGLE_API_KEY, so we pass it explicitly.
 const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 
-// Image Generation Function using Grok (xAI)
+// Image Generation Function using Grok (xAI) via OpenAI SDK
 const generateImage = async (prompt: string): Promise<string> => {
   console.log("🎨 Generating Image with Grok (xAI) for:", prompt);
 
@@ -15,35 +17,25 @@ const generateImage = async (prompt: string): Promise<string> => {
     return generateFallbackImage(prompt);
   }
 
+  const openai = new OpenAI({
+    baseURL: "https://api.x.ai/v1",
+    apiKey: apiKey,
+  });
+
   try {
-    // Attempting to use OpenAI-compatible images endpoint
-    const response = await fetch("https://api.x.ai/v1/images/generations", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: "grok-2-image-1212",
-        prompt: prompt + ", realistic, 8k, high quality, futuristic tech style",
-        n: 1,
-        response_format: "url",
-      }),
+    const response = await openai.images.generate({
+      model: "grok-2-image-1212",
+
+      prompt:
+        prompt +
+        ", realistic, 8k, high quality, futuristic tech style, 16:9 aspect ratio",
+      n: 1,
+      response_format: "url",
     });
 
-    if (!response.ok) {
-      const errText = await response.text();
-      throw new Error(
-        `xAI API Error: ${response.status} ${response.statusText} - ${errText}`
-      );
-    }
-
-    const data: any = await response.json();
-
-    // Check OpenAI-style response format
-    if (data.data && data.data.length > 0 && data.data[0].url) {
+    if (response.data && response.data.length > 0 && response.data[0].url) {
       console.log("✅ Grok Image generated successfully");
-      return data.data[0].url;
+      return response.data[0].url;
     }
 
     throw new Error("Invalid response format from xAI");
