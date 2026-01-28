@@ -15,6 +15,8 @@ const configuration = {
     "https://goniflow.com",
     "https://test.goniflow.com",
     "https://test.goniflow.ovh",
+    "https://next-componets-new.pages.dev",
+    process.env.CORS_URL,
   ],
   methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
   credentials: true,
