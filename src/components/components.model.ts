@@ -39,7 +39,7 @@ export interface ComponentDocument extends ComponentData, Document {}
 // --- Mongoose Schema Definition ---
 
 // The schema is defined based on the ComponentData structure
-const componentsSchema = new Schema<ComponentData>(
+const componentsSchema = new Schema<ComponentDocument>(
   {
     name: { type: String, required: true }, // Added required for better Mongoose practice
     category: { type: String, required: true },
@@ -67,7 +67,7 @@ const componentsSchema = new Schema<ComponentData>(
 
 // Export the Model with the correct type (ComponentDocument)
 export const componentsModel: Model<ComponentDocument> =
-  mainComponentConnection.model<ComponentDocument>(
+  mainComponentConnection.model<ComponentDocument, Model<ComponentDocument>>(
     "Components",
     componentsSchema
   );
