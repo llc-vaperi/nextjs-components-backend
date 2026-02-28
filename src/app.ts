@@ -3,8 +3,10 @@ import cors from "cors";
 import cookiesParse from "cookie-parser";
 import compression from "compression"; // Gzip compression
 import helmet from "helmet"; // Security headers
-import componentsRoutes from "./components/componentsRoutes.js";
-import { startBlogCron } from "./blog/blogCron.js";
+import componentsRoutes from "./components/components.routes.js";
+import blogRoutes from "./blog/blog.routes.js";
+import contactRoutes from "./contact/contact.routes.js";
+// import { startBlogCron } from "./blog/blogCron.js";
 
 const configuration = {
   origin: [
@@ -14,18 +16,18 @@ const configuration = {
     "https://next-componets-new.pages.dev",
     "https://test.goniflow.com",
     "https://test.goniflow.ovh",
-    "https://next-componets-new.pages.dev",
-    process.env.CORS_URL,
+    process.env.CORS_URL || "",
   ],
   methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
   credentials: true,
   optionsSuccessStatus: 200,
   allowedHeaders: ["Content-Type", "Authorization"], // Enhanced CORS
 };
+
 const app = express();
 
 // Start Background Services
-startBlogCron();
+// startBlogCron();
 
 app.use(helmet()); // Security Headers
 app.use(compression()); // Gzip Compression
@@ -38,11 +40,7 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-import blogRoutes from "./blog/blog.routes.js";
-import contactRoutes from "./contact/contact.routes.js";
-
-// ... existing code ...
-
+// Routes
 app.use("/api", componentsRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/contact", contactRoutes);

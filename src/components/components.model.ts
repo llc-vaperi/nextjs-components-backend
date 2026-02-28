@@ -1,6 +1,6 @@
-// path: /db/componentsModules.ts (Renamed from .js)
+// path: src/components/components.model.ts
 
-import { Schema, Model, Document } from "mongoose";
+import { Schema, Model, Document, Connection } from "mongoose";
 import { mainComponentConnection } from "../db/mongoDB.js";
 
 // --- Interfaces for Type Safety (Exported for Controller use) ---
