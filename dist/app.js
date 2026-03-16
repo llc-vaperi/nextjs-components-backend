@@ -8,42 +8,35 @@ import componentsRoutes from "./components/components.routes.js";
 import blogRoutes from "./blog/blog.routes.js";
 import contactRoutes from "./contact/contact.routes.js";
 // import { startBlogCron } from "./blog/blogCron.js";
-
 const configuration = {
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "http://localhost:3002",
-    "https://next-componets-new.pages.dev",
-    "https://test.goniflow.com",
-    "https://test.goniflow.ovh",
-    process.env.CORS_URL || "",
-  ],
-  methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
-  credentials: true,
-  optionsSuccessStatus: 200,
-  allowedHeaders: ["Content-Type", "Authorization"], // Enhanced CORS
+    origin: [
+        "http://localhost:3000",
+        "http://localhost:3001",
+        "http://localhost:3002",
+        "https://next-componets-new.pages.dev",
+        "https://test.goniflow.com",
+        "https://test.goniflow.ovh",
+        process.env.CORS_URL || "",
+    ],
+    methods: "GET, POST, PUT, DELETE, PATCH, HEAD",
+    credentials: true,
+    optionsSuccessStatus: 200,
+    allowedHeaders: ["Content-Type", "Authorization"], // Enhanced CORS
 };
-
 const app = express();
-
 // Start Background Services
 // startBlogCron();
-
 app.use(helmet()); // Security Headers
 app.use(compression()); // Gzip Compression
 app.use(cors(configuration));
 app.use(cookiesParse());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
-
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+    res.send("Hello World!");
 });
-
 // Routes
 app.use("/api", componentsRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/contact", contactRoutes);
-
 export default app;
