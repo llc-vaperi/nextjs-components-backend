@@ -99,7 +99,7 @@ export const submitContact = async (req: Request, res: Response) => {
       }
       
       Best regards,
-      The NextComponents Team
+      The Goniflow Team
     `;
 
     const htmlContent = `
@@ -132,7 +132,7 @@ export const submitContact = async (req: Request, res: Response) => {
           }
 
           <div style="border-top: 1px solid #e2e8f0; padding-top: 24px; margin-top: 32px; font-size: 14px; color: #94a3b8;">
-            <p style="margin: 0;">Best regards,<br><strong style="color: #475569;">NextComponents Team</strong></p>
+            <p style="margin: 0;">Best regards,<br><strong style="color: #475569;">Goniflow Team</strong></p>
           </div>
         </div>
       </body>
