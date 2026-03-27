@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { mainComponentConnection } from "../db/mongoDB.js";
+import { adminConnection } from "../db/mongoDB.js";
 const contactSchema = new Schema({
     type: { type: String, enum: ["contact", "support"], required: true },
     fullName: { type: String, required: true },
@@ -13,4 +13,4 @@ const contactSchema = new Schema({
     attachmentKey: { type: String },
     ticketId: { type: String },
 }, { timestamps: true });
-export const ContactModel = mainComponentConnection.model("Contact", contactSchema);
+export const ContactModel = adminConnection.model("Contact", contactSchema);

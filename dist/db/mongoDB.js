@@ -1,22 +1,26 @@
 import { createConnection } from "mongoose";
 import { config } from "dotenv";
 config();
-const mongoUriMain = process.env.MONGO_URI_MAINCOMPONENTS;
-const mongoUriBlog = process.env.MONGO_URI_BLOG;
-if (!mongoUriMain) {
-    console.error("❌ MONGO_URI_MAINCOMPONENTS is missing in .env");
+const mongoUriAdmin = process.env.MONGO_URI_ADMIN;
+const mongoUriWeb = process.env.MONGO_URI_WEB;
+if (!mongoUriWeb) {
+    console.error("❌ MONGO_URI_WEB is missing in .env");
     process.exit(1);
 }
-export const mainComponentConnection = createConnection(mongoUriMain)
-    .on("connected", () => console.log("DB connect main components"))
-    .on("disconnected", () => console.log("❌ DB disconnected main components"))
+if (!mongoUriAdmin) {
+    console.error("❌ MONGO_URI_ADMIN is missing in .env");
+    process.exit(1);
+}
+export const webConnection = createConnection(mongoUriWeb)
+    .on("connected", () => console.log("✅ DB connected goniflow_web"))
+    .on("disconnected", () => console.log("❌ DB disconnected goniflow_web"))
     .on("error", (err) => {
-    console.error("❌ DB error main components:", err);
+    console.error("❌ DB error goniflow_web:", err);
     process.exit(1);
 });
-export const blogConnection = createConnection(mongoUriBlog || "")
-    .on("connected", () => console.log("✅ DB connect blog"))
-    .on("disconnected", () => console.log("❌ DB disconnected blog"))
+export const adminConnection = createConnection(mongoUriAdmin)
+    .on("connected", () => console.log("✅ DB connected goniflow_admin"))
+    .on("disconnected", () => console.log("❌ DB disconnected goniflow_admin"))
     .on("error", (err) => {
-    console.error("❌ DB error blog:", err);
+    console.error("❌ DB error goniflow_admin:", err);
 });

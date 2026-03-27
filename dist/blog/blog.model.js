@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { blogConnection } from "../db/mongoDB.js";
+import { webConnection } from "../db/mongoDB.js";
 const blogSchema = new Schema({
     title: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
@@ -18,4 +18,4 @@ const blogSchema = new Schema({
     },
     isPublished: { type: Boolean, default: true },
 }, { timestamps: true });
-export const BlogModel = blogConnection.model("Blog", blogSchema);
+export const BlogModel = webConnection.model("Blog", blogSchema);

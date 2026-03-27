@@ -1,6 +1,6 @@
 // path: src/components/components.model.ts
 import { Schema } from "mongoose";
-import { mainComponentConnection } from "../db/mongoDB.js";
+import { webConnection } from "../db/mongoDB.js";
 // --- Mongoose Schema Definition ---
 // The schema is defined based on the ComponentData structure
 const componentsSchema = new Schema({
@@ -26,4 +26,4 @@ const componentsSchema = new Schema({
     updatedAt: { type: Date, default: () => new Date() }
 }, { timestamps: true }); // Mongoose can handle createdAt/updatedAt automatically
 // Export the Model with the correct type (ComponentDocument)
-export const componentsModel = mainComponentConnection.model("Components", componentsSchema);
+export const componentsModel = webConnection.model("Components", componentsSchema);
