@@ -1,5 +1,5 @@
 import { Schema, Model, Document } from "mongoose";
-import { mainComponentConnection } from "../db/mongoDB.js";
+import { adminConnection } from "../db/mongoDB.js";
 
 export interface IContact extends Document {
   type: "contact" | "support";
@@ -35,4 +35,4 @@ const contactSchema = new Schema<IContact>(
 );
 
 export const ContactModel: Model<IContact> =
-  mainComponentConnection.model<IContact>("Contact", contactSchema);
+  adminConnection.model<IContact>("Contact", contactSchema);

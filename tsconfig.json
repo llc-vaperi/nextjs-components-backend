@@ -14,7 +14,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
 
-    "types": ["node", "express", "cors", "cookie-parser", "compression", "helmet", "multer", "nodemailer", "node-cron", "json5"]
+    "types": ["node"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "**/*.spec.ts"]

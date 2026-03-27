@@ -1,5 +1,5 @@
 import { Schema } from "mongoose";
-import { blogConnection } from "../db/mongoDB.js";
+import { webConnection } from "../db/mongoDB.js";
 
 const blogSchema = new Schema(
   {
@@ -23,4 +23,4 @@ const blogSchema = new Schema(
   { timestamps: true }
 );
 
-export const BlogModel = blogConnection.model("Blog", blogSchema);
+export const BlogModel = webConnection.model("Blog", blogSchema);

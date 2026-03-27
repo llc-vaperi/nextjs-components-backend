@@ -1,7 +1,7 @@
 // path: src/components/components.model.ts
 
 import { Schema, Model, Document, Connection } from "mongoose";
-import { mainComponentConnection } from "../db/mongoDB.js";
+import { webConnection } from "../db/mongoDB.js";
 
 // --- Interfaces for Type Safety (Exported for Controller use) ---
 
@@ -67,7 +67,7 @@ const componentsSchema = new Schema<ComponentDocument>(
 
 // Export the Model with the correct type (ComponentDocument)
 export const componentsModel: Model<ComponentDocument> =
-  mainComponentConnection.model<ComponentDocument, Model<ComponentDocument>>(
+  webConnection.model<ComponentDocument, Model<ComponentDocument>>(
     "Components",
     componentsSchema
   );
