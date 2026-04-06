@@ -17,35 +17,86 @@ export interface Author {
   name: string;
 }
 
-// Interface for the data you interact with (input/output)
 export interface ComponentData {
   name: string;
   category: string;
   description: string;
   tags: string[];
   code: string;
-  aiMeta: AiMeta;
-  previewUrl: string;
-  author: Author;
+  style?: string;
+  dependencies?: string[];
+  warningFlags?: string[];
+  aiModel?: string;
+  version?: number;
+  
+  visualVibe?: string;
+  layoutType?: string;
+  editableProps?: string[];
+  contentFields?: any;
+  
   isApproved: boolean;
-  embedding: number[];
-  createdAt?: Date; // Optional or added by Mongoose
-  updatedAt?: Date; // Optional or added by Mongoose
+  isActive?: boolean;
+  
+  searchText?: string;
+  embeddingStatus?: string;
+  embeddingModel?: string;
+  embeddingDimensions?: number;
+  embeddingError?: string;
+  embeddingUpdatedAt?: Date;
+
+  // Legacy fields (optional)
+  aiMeta?: {
+    theme: string;
+    mood: string;
+    target: string[];
+    style: string;
+  };
+  previewUrl?: string;
+  author?: {
+    id: string;
+    name: string;
+  };
+  embedding?: number[];
+  
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
-// Interface for the Mongoose document (includes Mongoose properties like _id)
 export interface ComponentDocument extends ComponentData, Document {}
 
-// --- Mongoose Schema Definition ---
-
-// The schema is defined based on the ComponentData structure
 const componentsSchema = new Schema<ComponentDocument>(
   {
-    name: { type: String, required: true }, // Added required for better Mongoose practice
+    name: { type: String, required: true },
     category: { type: String, required: true },
-    description: String,
-    tags: [String],
+    description: { type: String },
+    tags: { type: [String], default: [] },
     code: { type: String, required: true },
+    style: { type: String },
+    dependencies: { type: [String], default: [] },
+    warningFlags: { type: [String], default: [] },
+    aiModel: { type: String },
+    version: { type: Number, default: 1 },
+    
+    visualVibe: { type: String },
+    layoutType: { type: String },
+    editableProps: { type: [String], default: [] },
+    contentFields: { type: Schema.Types.Mixed, default: {} },
+    
+    isApproved: { type: Boolean, default: false },
+    isActive: { type: Boolean, default: true },
+    
+    searchText: { type: String },
+    embeddingStatus: { 
+      type: String, 
+      enum: ['pending', 'ready', 'failed'], 
+      default: 'pending' 
+    },
+    embeddingModel: { type: String },
+    embeddingDimensions: { type: Number },
+    embeddingError: { type: String },
+    embeddingUpdatedAt: { type: Date },
+
+    // Legacy Support
     aiMeta: {
       theme: String,
       mood: String,
@@ -57,13 +108,10 @@ const componentsSchema = new Schema<ComponentDocument>(
       id: String,
       name: String
     },
-    isApproved: Boolean,
     embedding: [Number],
-    createdAt: { type: Date, default: () => new Date() },
-    updatedAt: { type: Date, default: () => new Date() }
   },
-  { timestamps: true }
-); // Mongoose can handle createdAt/updatedAt automatically
+  { timestamps: true, strict: false } // strict false allows reading unmapped fields if needed
+);
 
 // Export the Model with the correct type (ComponentDocument)
 export const componentsModel: Model<ComponentDocument> =
