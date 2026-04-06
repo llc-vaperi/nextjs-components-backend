@@ -4,7 +4,16 @@ import JSON5 from "json5";
 
 export const componentsListFunc = async (req: Request, res: Response) => {
   try {
-    const components: ComponentData[] = await componentsModel.find({});
+    const filter: any = { isApproved: true };
+    // isActive is true by default, but to be robust checking for !== false is safer, but strictly { isActive: true } is fine too.
+    // If Admin explicitly sets false it hides it. Since we just added it, some docs might lack it.
+    filter.$or = [{ isActive: true }, { isActive: { $exists: false } }];
+
+    const components: ComponentData[] = await componentsModel
+      .find(filter)
+      .sort({ updatedAt: -1 })
+      .lean(); // Faster to use lean for read-only
+      
     res.json(components);
   } catch (error) {
     console.error("Error fetching components:", error);
