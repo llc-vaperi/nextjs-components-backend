@@ -16,17 +16,27 @@ if (!mongoUriAdmin) {
   process.exit(1);
 }
 
-export const webConnection: Connection = createConnection(mongoUriWeb)
-  .on("connected", () => console.log("✅ DB connected goniflow_web"))
-  .on("disconnected", () => console.log("❌ DB disconnected goniflow_web"))
+const connectionOptions = {
+  maxPoolSize: 10,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+  family: 4,
+  heartbeatFrequencyMS: 10000,
+};
+
+export const webConnection: Connection = createConnection(mongoUriWeb, connectionOptions)
+  .on("connected", () => console.log("✅ DB connected: goniflow_web"))
+  .on("reconnected", () => console.log("🔄 DB reconnected: goniflow_web"))
+  .on("disconnected", () => console.log("❌ DB disconnected: goniflow_web"))
   .on("error", (err) => {
-    console.error("❌ DB error goniflow_web:", err);
-    process.exit(1);
+    console.error("❌ DB error: goniflow_web:", err);
+    // process.exit(1); // Don't kill whole app on single connection flap
   });
 
-export const adminConnection: Connection = createConnection(mongoUriAdmin)
-  .on("connected", () => console.log("✅ DB connected goniflow_admin"))
-  .on("disconnected", () => console.log("❌ DB disconnected goniflow_admin"))
+export const adminConnection: Connection = createConnection(mongoUriAdmin, connectionOptions)
+  .on("connected", () => console.log("✅ DB connected: goniflow_admin"))
+  .on("reconnected", () => console.log("🔄 DB reconnected: goniflow_admin"))
+  .on("disconnected", () => console.log("❌ DB disconnected: goniflow_admin"))
   .on("error", (err) => {
-    console.error("❌ DB error goniflow_admin:", err);
+    console.error("❌ DB error: goniflow_admin:", err);
   });
