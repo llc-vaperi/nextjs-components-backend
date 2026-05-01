@@ -7,11 +7,13 @@
     "rootDir": "./src",
 
     "strict": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
 
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "sourceMap": true,
     "skipLibCheck": true,
 
     "types": ["node"]

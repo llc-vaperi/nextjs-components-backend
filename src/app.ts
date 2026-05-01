@@ -41,6 +41,10 @@ app.get("/", (req, res) => {
 });
 
 // Routes
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", message: "Server is responding" });
+});
+
 app.use("/api", componentsRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/contact", contactRoutes);

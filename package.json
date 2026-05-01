@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsx src/main.ts",
-    "dev": "nodemon",
+    "dev": "nodemon --exec tsx src/main.ts",
     "build": "tsc"
   },
   "dependencies": {
@@ -35,7 +35,7 @@
     "@types/express": "^5.0.0",
     "@types/json5": "^0.0.30",
     "@types/multer": "^1.4.12",
-    "@types/node": "^24.10.1",
+    "@types/node": "^22.0.0",
     "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^7.0.4",
     "ts-node": "^10.9.2",
